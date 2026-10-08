@@ -441,6 +441,8 @@ function startClip(L,key){
   a.addEventListener('error',fb,{once:true});setTimeout(fb,5000);
 }
 const BLOB=/claude\.ai/.test(location.hostname)?{'idle-a':'/_blob/76ec198c29a4ee8bb433a5dff44364f3','awaken':'/_blob/dea1a927a02d2da1e91f5571144235fd','lang':'/_blob/96794b8f41c54da17fce95cb26bbb0af','breath':'/_blob/d25fc23941156093a20cf6f2cbb6107e','mg-nature':'/_blob/ab0ba5dea073574abb1d5ff7feb61df2','mg-galaxy':'/_blob/221c94c6b4b22332a79e68ae0a2b545f','mg-zen':'/_blob/c278817088307aa98cd38a51f8d02194'}:{'idle-a':'https://files.catbox.moe/3mn2qg.mp4','awaken':'https://files.catbox.moe/ff04lk.mp4','lang':'https://files.catbox.moe/9k0h50.mp4','breath':'https://files.catbox.moe/i4cwug.mp4','mg-nature':'https://files.catbox.moe/zn14j3.mp4','mg-galaxy':'https://files.catbox.moe/d3zbke.mp4','mg-zen':'https://files.catbox.moe/o42nie.mp4'};
+/* fix thumb videos: HTML has hardcoded /_blob/ which only works on claude.ai */
+[['idle-a',0],['awaken',1]].forEach(([k,i])=>{const v=document.querySelector(`.thumb[data-theme="${i}"] video`);if(v&&BLOB[k])v.src=BLOB[k]});
 async function loadBlob(key){if(BLOB[key])return BLOB[key];vstat(key,'tải dự phòng');const r=await fetch(`video/${key}.mp4`);if(!r.ok)throw new Error('HTTP '+r.status);
   const total=+r.headers.get('content-length')||0,rd=r.body.getReader(),parts=[];let got=0;
   for(;;){const {done,value}=await rd.read();if(done)break;parts.push(value);got+=value.length;if(total)vstat(key,'tải '+Math.round(got/total*100)+'%')}
