@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Web Test</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap">
@@ -150,6 +151,11 @@ html,body{height:100%;margin:0;background:var(--letterbox);overflow:hidden;font-
 .mcard img{width:100%;height:100%;display:block}
 .mtext{display:flex;flex-direction:column;gap:20px}
 .mname{font:600 30px/1.2 var(--body);color:#fff;text-shadow:0 0 8px var(--glow);margin:-8px 0 0}
+/* quote / tarot / meaning sit on dark space art: darker glass + white text with a soft dark shadow */
+[data-id=quote] .glass,[data-id=tarot] .glass,[data-id=meaning] .glass{background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(140,160,230,.14))}
+[data-id=quote] :is(.h,.sub),[data-id=tarot] :is(.h,.sub),[data-id=meaning] :is(.h,.mname,.p){color:#fff;text-shadow:0 1px 2px rgba(8,12,40,.6),0 0 14px rgba(15,30,90,.55)}
+[data-id=meaning] .h{font-size:52px}
+[data-id=meaning] .mname{font-size:28px;margin:0}
 
 /* reviewer menu (outside the kiosk design) */
 #nav{position:fixed;left:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:10;font:500 13px/1.3 var(--body);color:#e8eefc}
@@ -458,7 +464,7 @@ function setBg(name){
 }
 function applySound(){[bgFront,bgBack].forEach(L=>(L._vids||[]).forEach(v=>{const want=!(sound&&armed);if(v.muted!==want){v.muted=want;if(!want&&L._on===v)fadeVol(v,VOL,900)}}));const t=$('#navSound');if(t)t.textContent=sound?'Tắt âm thanh':'Bật âm thanh'}
 addEventListener('pointerdown',()=>{if(!armed){armed=true;applySound()}},{capture:true});
-function bgFor(id){if(id==='mg')return THEMES[S.theme].bg;if(id==='idle')return BG.idle[S.idleTheme];if(id==='quote'||id==='tarot')return BG.quote[S.quoteVisit%2];return BG[id]}
+function bgFor(id){if(id==='mg')return THEMES[S.theme].bg;if(id==='idle')return BG.idle[S.idleTheme];if(id==='quote'||id==='tarot'||id==='meaning')return BG.quote[S.quoteVisit%2];return BG[id]}
 ORDER.flatMap(id=>[].concat(BG[id]||[])).concat(Object.values(THEMES).map(t=>t.bg)).forEach(n=>{const i=new Image();i.src=`img/${n}.webp`});
 
 /* ---------- router ---------- */
@@ -585,7 +591,7 @@ hooks.tarot={enter(){
 },leave(){clearTimeout(tT)}};
 
 /* ---------- meaning ---------- */
-hooks.meaning={enter(){const t=TAROT[S.tarot];$('#mImg').src=`img/${t.img}.webp`;$('#mName').textContent=t.name;$('#mText').innerHTML=t.text.map(p=>`<p class="p" style="font-size:26px;line-height:1.35">${p}</p>`).join('')}};
+hooks.meaning={enter(){const t=TAROT[S.tarot];$('#mImg').src=`img/${t.img}.webp`;$('#mName').textContent=t.name;$('#mText').innerHTML=t.text.map(p=>`<p class="p" style="font-size:24px;line-height:1.45">${p}</p>`).join('')}};
 
 /* ---------- reviewer menu ---------- */
 const navBtn=$('#navBtn'),navList=$('#navList');
