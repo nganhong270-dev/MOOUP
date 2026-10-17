@@ -124,8 +124,8 @@ html,body{height:100%;margin:0;background:var(--letterbox);overflow:hidden;font-
 
 /* result */
 .other{display:flex;flex-direction:column;align-items:center;gap:16px;border:0;background:none;padding:0;cursor:pointer;width:209px}
-.other .ci{width:200px;height:200px;border-radius:50%;background-size:cover;background-position:center;box-shadow:0 8px 30px rgba(0,0,0,.3);transition:transform .3s,box-shadow .3s}
-.other:hover .ci{transform:scale(1.06);box-shadow:0 0 0 6px rgba(255,255,255,.7),0 10px 36px rgba(0,0,0,.35)}
+.other .ci{width:200px;height:200px;border-radius:50%;background-size:cover;background-position:center;box-shadow:0 0 0 4px rgba(255,255,255,.85),0 0 30px rgba(150,190,255,.5),0 12px 32px rgba(0,0,0,.45);transition:transform .3s,box-shadow .3s}
+.other:hover .ci,.other:active .ci{transform:scale(1.06);box-shadow:0 0 0 6px #fff,0 0 40px rgba(170,205,255,.75),0 12px 36px rgba(0,0,0,.45)}
 .other b{font:600 26px/1.2 var(--body);color:#fff;text-shadow:0 0 8px var(--glow)}
 
 /* cards */
@@ -155,8 +155,8 @@ html,body{height:100%;margin:0;background:var(--letterbox);overflow:hidden;font-
 .mtext{display:flex;flex-direction:column;gap:20px}
 .mname{font:600 30px/1.2 var(--body);color:#fff;text-shadow:0 0 8px var(--glow);margin:-8px 0 0}
 /* quote / tarot / meaning sit on dark space art: darker glass + white text with a soft dark shadow */
-[data-id=quote] .glass,[data-id=tarot] .glass,[data-id=meaning] .glass{background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(140,160,230,.14))}
-[data-id=quote] :is(.h,.sub),[data-id=tarot] :is(.h,.sub),[data-id=meaning] :is(.h,.mname,.p){color:#fff;text-shadow:0 1px 2px rgba(8,12,40,.6),0 0 14px rgba(15,30,90,.55)}
+[data-id=quote] .glass,[data-id=tarot] .glass,[data-id=meaning] .glass,[data-id=result] .glass{background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(140,160,230,.14))}
+[data-id=quote] :is(.h,.sub),[data-id=tarot] :is(.h,.sub),[data-id=meaning] :is(.h,.mname,.p),[data-id=result] :is(.h,.sub,.p,.other b){color:#fff;text-shadow:0 1px 2px rgba(8,12,40,.6),0 0 14px rgba(15,30,90,.55)}
 [data-id=meaning] .h{font-size:52px}
 [data-id=meaning] .mname{font-size:28px;margin:0}
 
