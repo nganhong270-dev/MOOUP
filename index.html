@@ -156,8 +156,9 @@ html,body{height:100%;margin:0;background:var(--letterbox);overflow:hidden;font-
 .mname{font:600 30px/1.2 var(--body);color:#fff;text-shadow:0 0 8px var(--glow);margin:-8px 0 0}
 /* quote / tarot / meaning sit on dark space art: darker glass + white text with a soft dark shadow */
 [data-id=quote] .glass,[data-id=tarot] .glass,[data-id=meaning] .glass,[data-id=result] .glass{background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(140,160,230,.14))}
-[data-id=quote] :is(.h,.sub),[data-id=tarot] :is(.h,.sub),[data-id=meaning] :is(.h,.mname,.p),[data-id=result] :is(.h,.sub,.p,.other b){color:#fff;text-shadow:0 1px 2px rgba(8,12,40,.6),0 0 14px rgba(15,30,90,.55)}
+[data-id=quote] .h,[data-id=quote] .sub,[data-id=tarot] .h,[data-id=tarot] .sub,[data-id=meaning] .h,[data-id=meaning] .mname,[data-id=meaning] .p,[data-id=result] .h,[data-id=result] .sub,[data-id=result] .p,[data-id=result] .p b,[data-id=result] .other b{color:#fff;text-shadow:0 1px 2px rgba(8,12,40,.6),0 0 14px rgba(15,30,90,.55)}
 [data-id=meaning] .h{font-size:52px}
+.bg.dim::after{content:"";position:absolute;inset:0;z-index:3;background:rgba(0,0,0,.2);pointer-events:none}
 [data-id=meaning] .mname{font-size:28px;margin:0}
 
 /* reviewer menu (outside the kiosk design) */
@@ -460,7 +461,7 @@ function vstat(key,msg){if(VID_KEY()!==key)return;const e=$('#navVid');if(e)e.te
 function VID_KEY(){return bgNow}
 function setBg(name){
   const key=VID[name]||name;if(key===bgNow)return;bgNow=key;
-  bgBack.style.backgroundImage=`url(img/${name}.webp)`;
+  bgBack.style.backgroundImage=`url(img/${name}.webp)`;bgBack.classList.toggle('dim',name===BG.result);
   stopLayer(bgBack);bgBack.classList.toggle('still',!VID[name]||reduced);
   if(VID[name]&&!reduced)startClip(bgBack,VID[name]);else{const e=$('#navVid');if(e)e.textContent=''}
   bgBack.classList.add('show');bgFront.classList.remove('show');stopLayer(bgFront);[bgFront,bgBack]=[bgBack,bgFront];
