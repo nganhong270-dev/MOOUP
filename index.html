@@ -118,6 +118,9 @@ html,body{height:100%;margin:0;background:var(--letterbox);overflow:hidden;font-
 @keyframes spark{to{transform:translate(var(--sx),var(--sy)) scale(.2);opacity:0}}
 .hud{position:absolute;left:50%;top:48px;transform:translateX(-50%);padding:14px 32px;border-radius:100px;font:600 28px/1.2 var(--body);color:#fff;text-shadow:0 0 8px var(--glow);transition:opacity .5s;font-variant-numeric:tabular-nums}
 .hud.glass{border-radius:100px}
+/* blur over a playing video re-renders every frame: keep the in-game HUD flat and the intro blur light */
+[data-id=mg] .hud.glass{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(20,40,100,.34)}
+#mgIntro{backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%)}
 
 /* result */
 .other{display:flex;flex-direction:column;align-items:center;gap:16px;border:0;background:none;padding:0;cursor:pointer;width:209px}
@@ -434,8 +437,8 @@ function startClip(L,key){
   a.addEventListener('playing',()=>show(a),{once:true});
   const watch=v=>v.addEventListener('timeupdate',()=>{
     if(L._on!==v||!v.duration)return;
-    if(v.currentTime>v.duration-XF){const o=v===a?b:a;L._on=o;o.currentTime=0;o.muted=v.muted;o.volume=0;o.play().catch(()=>{});o.classList.add('vis');if(!o.muted)fadeVol(o,VOL,XF*1000);
-      o.style.zIndex=2;v.style.zIndex=1;fadeVol(v,0,XF*1000);setTimeout(()=>{if(L._on===o){v.classList.remove('vis');v.pause()}},XF*1000+120)}
+    if(v.currentTime>v.duration-XF){const o=v===a?b:a;L._on=o;if(o.currentTime)o.currentTime=0;o.muted=v.muted;o.volume=0;o.play().catch(()=>{});o.classList.add('vis');if(!o.muted)fadeVol(o,VOL,XF*1000);
+      o.style.zIndex=2;v.style.zIndex=1;fadeVol(v,0,XF*1000);setTimeout(()=>{if(L._on===o){v.classList.remove('vis');v.pause();v.currentTime=0}},XF*1000+120)}
   });
   if(SEAMLESS.has(key)){a.loop=true;b.remove();L._vids=[a]}else{watch(a);watch(b)}
   a.play().catch(()=>{});
@@ -556,10 +559,10 @@ function spawn(){
 }
 hooks.mg={enter(){
   const t=THEMES[S.theme];$('#mgPlace').textContent=t.place;$('#field').innerHTML='';S.hits=0;$('#hits').textContent=0;
-  const intro=$('#mgIntro');intro.style.opacity='';intro.style.transform='';intro.style.pointerEvents='';
+  const intro=$('#mgIntro');intro.style.opacity='';intro.style.transform='';intro.style.pointerEvents='';intro.style.visibility='';
   $('#hud').classList.add('fade');const b=$('#mgDone');b.classList.add('fade');b.style.pointerEvents='none';
 },leave(){mgT.forEach(clearInterval);mgT=[];S.played.add(S.theme)}};
-$('#mgStart').onclick=()=>{const intro=$('#mgIntro');intro.style.opacity=0;intro.style.transform='translateY(40px)';intro.style.pointerEvents='none';$('#hud').classList.remove('fade');spawn();mgT.push(setInterval(spawn,1300))};
+$('#mgStart').onclick=()=>{const intro=$('#mgIntro');intro.style.opacity=0;intro.style.transform='translateY(40px)';intro.style.pointerEvents='none';setTimeout(()=>{if(intro.style.opacity==='0')intro.style.visibility='hidden'},520);$('#hud').classList.remove('fade');spawn();mgT.push(setInterval(spawn,1300))};
 $('#mgDone').onclick=()=>go('result');
 
 /* ---------- result ---------- */
