@@ -458,7 +458,7 @@ function setBg(name){
 }
 function applySound(){[bgFront,bgBack].forEach(L=>(L._vids||[]).forEach(v=>{const want=!(sound&&armed);if(v.muted!==want){v.muted=want;if(!want&&L._on===v)fadeVol(v,VOL,900)}}));const t=$('#navSound');if(t)t.textContent=sound?'Tắt âm thanh':'Bật âm thanh'}
 addEventListener('pointerdown',()=>{if(!armed){armed=true;applySound()}},{capture:true});
-function bgFor(id){if(id==='mg')return THEMES[S.theme].bg;if(id==='idle')return BG.idle[S.idleTheme];if(id==='quote')return BG.quote[S.quoteVisit%2];return BG[id]}
+function bgFor(id){if(id==='mg')return THEMES[S.theme].bg;if(id==='idle')return BG.idle[S.idleTheme];if(id==='quote'||id==='tarot')return BG.quote[S.quoteVisit%2];return BG[id]}
 ORDER.flatMap(id=>[].concat(BG[id]||[])).concat(Object.values(THEMES).map(t=>t.bg)).forEach(n=>{const i=new Image();i.src=`img/${n}.webp`});
 
 /* ---------- router ---------- */
@@ -485,7 +485,7 @@ function goHome(){S.played.clear();S.hits=0;go('idle',{dir:-1})}
 /* ---------- idle ---------- */
 let idleTimer;
 function idleTheme(i){S.idleTheme=i;$$('.thumb').forEach(t=>t.classList.toggle('act',+t.dataset.theme===i));if(cur==='idle')setBg(bgFor('idle'))}
-hooks.idle={enter(){idleTheme(S.idleTheme);clearInterval(idleTimer);idleTimer=setInterval(()=>idleTheme(1-S.idleTheme),10000)},leave(){clearInterval(idleTimer)}};
+hooks.idle={enter(){idleTheme(S.idleTheme);clearInterval(idleTimer);idleTimer=setInterval(()=>idleTheme(1-S.idleTheme),8000)},leave(){clearInterval(idleTimer)}};
 $$('.thumb').forEach(t=>t.addEventListener('click',()=>{idleTheme(+t.dataset.theme);hooks.idle.enter()}));
 
 /* ---------- language ---------- */
@@ -512,7 +512,7 @@ function move(e){const x=Math.max(STOPS[0],Math.min(STOPS[2],localX(e)));knob.st
 track.addEventListener('keydown',e=>{if(e.key==='ArrowRight')setFeel(Math.min(2,S.feel+1));if(e.key==='ArrowLeft')setFeel(Math.max(0,S.feel-1))});
 $$('.flabel').forEach(l=>l.onclick=()=>setFeel(+l.dataset.f));
 setFeel(0);
-$('#feelNext').onclick=()=>go('breath',{dy:500});
+$('#feelNext').onclick=()=>go('breath');
 
 /* ---------- breath ---------- */
 /* text follows the breathing in the Figma video: orb grows 0-4 s (inhale), shrinks 4-10 s (exhale) */
@@ -537,12 +537,11 @@ hooks.breath={enter(){
 $$('.topic').forEach(t=>t.onclick=()=>{S.theme=t.dataset.topic;go('mg')});
 
 /* ---------- minigame ---------- */
-let mgT=[],audio;
-function chime(){try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();const notes=[523.25,587.33,659.25,783.99,880,1046.5];const f=notes[Math.floor(Math.random()*notes.length)];const o=audio.createOscillator(),g=audio.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,audio.currentTime);g.gain.exponentialRampToValueAtTime(.18,audio.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+1.6);o.connect(g).connect(audio.destination);o.start();o.stop(audio.currentTime+1.7)}catch(e){}}
+let mgT=[];
 function spawn(){
   const field=$('#field');if(field.querySelectorAll('.dot:not(.gone):not(.pop)').length>=3)return;
   const t=THEMES[S.theme],[x,y]=t.pt();const d=document.createElement('button');d.className='dot';d.setAttribute('aria-label','Điểm sáng');d.style.left=x+'px';d.style.top=y+'px';d.style.setProperty('--dc',t.dc);
-  d.onclick=()=>{if(d.classList.contains('pop'))return;d.classList.add('pop');chime();S.hits++;$('#hits').textContent=S.hits;
+  d.onclick=()=>{if(d.classList.contains('pop'))return;d.classList.add('pop');S.hits++;$('#hits').textContent=S.hits;
     for(let k=0;k<10;k++){const s=document.createElement('i');s.className='spark';const a=k/10*Math.PI*2,r=90+Math.random()*60;s.style.left=x+'px';s.style.top=y+'px';s.style.setProperty('--sx',Math.cos(a)*r+'px');s.style.setProperty('--sy',Math.sin(a)*r+'px');field.append(s);setTimeout(()=>s.remove(),850)}
     setTimeout(()=>d.remove(),600);
     if(S.hits>2){const b=$('#mgDone');b.classList.remove('fade');b.style.pointerEvents='auto'}};
